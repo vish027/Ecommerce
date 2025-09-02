@@ -1,8 +1,6 @@
 import cookieParser from 'cookie-parser';
 import express from 'express';
 import cors from 'cors';
-import path from 'path';
-import { fileURLToPath } from 'url';
 import connectDB from './configs/db.js';
 import 'dotenv/config';
 import userRouter from './routes/userRoute.js';
@@ -16,10 +14,6 @@ import { stripeWebhooks } from './controllers/orderController.js';
 
 const app = express();
 const port = process.env.PORT || 4000;
-
-// Resolve dirname since we’re using ES modules
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 
 // Connect DB + Cloudinary
 await connectDB();
@@ -44,13 +38,12 @@ app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
 app.use('/api/order', orderRouter);
 
-// ✅ Serve React frontend build
-app.use(express.static(path.join(__dirname, '../client/dist'))); // Vite build folder
-
-// Catch-all route → React index.html
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
-});
+// ✅ Remove frontend serving for backend-only deployment
+// Comment out or delete these lines:
+// app.use(express.static(path.join(__dirname, '../client/dist'))); 
+// app.get('*', (req, res) => {
+//   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+// });
 
 // Start server
 app.listen(port, () => {
