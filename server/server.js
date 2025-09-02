@@ -15,22 +15,27 @@ import { stripeWebhooks } from './controllers/orderController.js';
 const app = express();
 const port = process.env.PORT || 4000;
 
-// Connect DB + Cloudinary
+// ✅ Connect DB + Cloudinary
 await connectDB();
 await connectCloudinary();
 
-// Allow multiple origins
-const allowedOrigins = ['http://localhost:5173', ''];
+// ✅ Allow multiple origins
+const allowedOrigins = ['http://localhost:5173', '']; // add your frontend deployed URL here
 
-// Stripe webhook BEFORE body-parser
+// ✅ Stripe webhook BEFORE body-parser
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
-// Middleware
+// ✅ Middleware
 app.use(express.json());
 app.use(cookieParser());
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 
-// API routes
+// ✅ Root route (health check)
+app.get('/', (req, res) => {
+  res.send('🟢 Backend is running!');
+});
+
+// ✅ API routes
 app.use('/api/user', userRouter);
 app.use('/api/seller', sellerRouter);
 app.use('/api/product', productRouter);
@@ -38,14 +43,7 @@ app.use('/api/cart', cartRouter);
 app.use('/api/address', addressRouter);
 app.use('/api/order', orderRouter);
 
-// ✅ Remove frontend serving for backend-only deployment
-// Comment out or delete these lines:
-// app.use(express.static(path.join(__dirname, '../client/dist'))); 
-// app.get('*', (req, res) => {
-//   res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
-// });
-
-// Start server
+// ✅ Start server
 app.listen(port, () => {
   console.log(`✅ Server is running on http://localhost:${port}`);
 });
