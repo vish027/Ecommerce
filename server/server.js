@@ -20,7 +20,7 @@ await connectDB();
 await connectCloudinary();
 
 // ✅ Allow multiple origins
-const allowedOrigins = ['http://localhost:5173', '']; // add your frontend deployed URL here
+const allowedOrigins = ['http://localhost:5173']; // add your frontend deployed URL here
 
 // ✅ Stripe webhook BEFORE body-parser
 app.post('/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
